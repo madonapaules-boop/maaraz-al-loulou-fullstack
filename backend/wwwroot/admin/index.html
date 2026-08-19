@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إدارة معرض اللؤلؤه</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/admin/dashboard.css" />
+  </head>
+  <body>
+    <section id="loginView" class="login-view">
+      <form id="loginForm" class="login-card">
+        <div class="admin-mark">ل</div>
+        <p class="eyebrow">لوحة داخلية</p>
+        <h1>إدارة معرض<br /><span>اللؤلؤه.</span></h1>
+        <label
+          >اسم المستخدم<input
+            name="username"
+            required
+            autocomplete="username"
+            value="admin"
+        /></label>
+        <label
+          >كلمة المرور<input
+            name="password"
+            type="password"
+            required
+            autocomplete="current-password"
+        /></label>
+        <p id="loginError" class="form-error" aria-live="polite"></p>
+        <button class="primary" type="submit">تسجيل الدخول</button>
+        <small>للاستخدام الإداري فقط</small>
+      </form>
+    </section>
+    <main id="appView" class="app-view hidden">
+      <aside class="sidebar">
+        <div class="side-brand">
+          <div class="tiny-mark">ل</div>
+          <div><b>معرض اللؤلؤه</b><small>إدارة المتجر</small></div>
+        </div>
+        <nav>
+          <button class="nav-link active" data-view="products">المنتجات</button
+          ><button class="nav-link" data-view="categories">الأقسام</button
+          ><button class="nav-link" data-view="orders">الطلبات</button>
+        </nav>
+        <div class="side-footer">
+          <a href="/swagger" target="_blank">Swagger API</a
+          ><button id="logoutButton">تسجيل الخروج</button>
+        </div>
+      </aside>
+      <section class="workspace">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">نظرة تشغيلية</p>
+            <h1 id="viewTitle">المنتجات</h1>
+          </div>
+          <button id="mainAction" class="primary">إضافة منتج</button>
+        </header>
+        <p id="toast" class="toast" aria-live="polite"></p>
+        <section id="productsView" class="view-pane">
+          <div class="stats">
+            <article>
+              <span>إجمالي المنتجات</span><b id="productsCount">—</b>
+            </article>
+            <article>
+              <span>مخزون منخفض</span><b id="lowStockCount">—</b>
+            </article>
+            <article><span>عروض فعّالة</span><b id="offersCount">—</b></article>
+          </div>
+          <div class="table-card">
+            <div class="table-top">
+              <h2>كل المنتجات</h2>
+              <input id="productSearch" placeholder="ابحثي باسم المنتج" />
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>المنتج</th>
+                    <th>القسم</th>
+                    <th>السعر</th>
+                    <th>المخزون</th>
+                    <th>الحالة</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="productsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section id="categoriesView" class="view-pane hidden">
+          <div class="table-card">
+            <div class="table-top">
+              <h2>أقسام المتجر</h2>
+              <button id="addCategory" class="secondary">إضافة قسم</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>العربي</th>
+                    <th>الإنجليزي</th>
+                    <th>الوصف</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="categoriesTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section id="ordersView" class="view-pane hidden">
+          <div class="table-card">
+            <div class="table-top">
+              <h2>سجل طلبات واتساب</h2>
+              <button id="addOrder" class="secondary">تسجيل طلب</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>العميل</th>
+                    <th>التليفون</th>
+                    <th>القطع</th>
+                    <th>الإجمالي</th>
+                    <th>التاريخ</th>
+                    <th>الحالة</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <div id="modalRoot" class="modal-root hidden"></div>
+    <script src="/admin/dashboard.js"></script>
+  </body>
+</html>
