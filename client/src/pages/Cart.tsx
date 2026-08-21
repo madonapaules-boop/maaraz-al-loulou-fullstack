@@ -33,6 +33,7 @@ export default function Cart() {
       "noopener,noreferrer"
     );
   };
+
   return (
     <main className="page-shell">
       <div className="container page-intro compact-intro">
@@ -42,9 +43,7 @@ export default function Cart() {
         <h1>
           تفاصيلك <span>المختارة.</span>
         </h1>
-        <p>
-          راجعي قطعك، ثم أرسلي طلبك مباشرة عبر واتساب لنرتب كل التفاصيل معك.
-        </p>
+        <p>راجعي قطعك، ثم أرسلي طلبك مباشرة عبر واتساب لنرتب كل التفاصيل معك.</p>
       </div>
       <div className="container">
         {lines.length ? (
@@ -52,26 +51,28 @@ export default function Cart() {
             <section className="cart-list">
               {lines.map(({ product, quantity }) => (
                 <article className="cart-line" key={product.id}>
-                  <img src={mainImage(product)} alt={product.name} />
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="cart-product-image"
+                    aria-label={`عرض ${product.name}`}
+                  >
+                    <img src={mainImage(product)} alt={product.name} />
+                  </Link>
                   <div className="cart-line-copy">
                     <span>{product.categoryNameArabic}</span>
-                    <h3>{product.name}</h3>
+                    <h3>
+                      <Link href={`/products/${product.id}`} className="cart-product-name">
+                        {product.name}
+                      </Link>
+                    </h3>
                     <b>{formatPrice(product.finalPrice)}</b>
                     <div className="cart-line-actions">
                       <div className="quantity-control small">
-                        <button
-                          onClick={() =>
-                            updateQuantity(product.id, quantity - 1)
-                          }
-                        >
+                        <button onClick={() => updateQuantity(product.id, quantity - 1)}>
                           <Minus size={14} />
                         </button>
                         <b>{quantity}</b>
-                        <button
-                          onClick={() =>
-                            updateQuantity(product.id, quantity + 1)
-                          }
-                        >
+                        <button onClick={() => updateQuantity(product.id, quantity + 1)}>
                           <Plus size={14} />
                         </button>
                       </div>
@@ -115,8 +116,7 @@ export default function Cart() {
                 <MessageCircle size={21} /> أرسلي الطلب عبر واتساب
               </button>
               <p className="summary-note">
-                بالضغط على الزر سيفتح واتساب برسالة طلب جاهزة. يمكنك تعديلها قبل
-                الإرسال.
+                بالضغط على الزر سيفتح واتساب برسالة طلب جاهزة. يمكنك تعديلها قبل الإرسال.
               </p>
             </aside>
           </div>

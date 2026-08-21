@@ -14,7 +14,8 @@ public static class DatabaseSeeder
                 ("أطقم عشا", "Dinner Sets"), ("أطقم افطار", "Breakfast Sets"), ("أطقم صيني", "Chinaware Sets"),
                 ("أطقم حلل", "Cookware Sets"), ("أطقم توابل", "Spice Sets"), ("أطقم صواني", "Tray Sets"),
                 ("أطباق فاكهه", "Fruit Plates"), ("أطقم توزيع", "Serving Sets"), ("اكسسورات وديكور", "Accessories & Decor"),
-                ("رفايع", "Rafay3"), ("أكواب وفناجين", "Cups & Mugs"), ("هدايا مناسبات", "Occasion Gifts")
+                ("رفايع", "Rafay3"), ("أكواب وفناجين", "Cups & Mugs"), ("هدايا مناسبات", "Occasion Gifts"),
+                ("أجهزة كهربائية", "Electrical Appliances")
             };
             db.Categories.AddRange(categories.Select(x => new Category { NameArabic = x.Item1, NameEnglish = x.Item2 }));
             await db.SaveChangesAsync();
@@ -36,7 +37,8 @@ public static class DatabaseSeeder
                 ("فازة سيراميك هادئة", "فازة ديكور بلون عاجي لزوايا البيت.", 520m, "اكسسورات وديكور", "عاجي", 11, true, true, false, (decimal?)null),
                 ("قطعة رفايع كريستال", "قطعة ديكور صغيرة للاستخدام أو العرض.", 395m, "رفايع", "لؤلؤي", 3, false, false, false, (decimal?)null),
                 ("مجموعة مجات قهوة", "6 مجات قهوة بنقشة هادئة ومقابض مريحة.", 610m, "أكواب وفناجين", "وردي", 14, false, true, false, (decimal?)null),
-                ("بوكس هدية مناسبات", "هدية مرتبة تضم تفاصيل ضيافة مميزة.", 1150m, "هدايا مناسبات", "ذهبي", 6, true, false, true, 990m)
+                ("بوكس هدية مناسبات", "هدية مرتبة تضم تفاصيل ضيافة مميزة.", 1150m, "هدايا مناسبات", "ذهبي", 6, true, false, true, 990m),
+                ("غلاية كهربائية بيرل", "غلاية كهربائية بلون كريمي هادئ وتفاصيل ذهبية ناعمة للمطبخ.", 1650m, "أجهزة كهربائية", "كريمي", 8, true, true, false, (decimal?)null)
             };
             foreach (var item in items)
             {

@@ -8,6 +8,7 @@ import { CatalogProvider } from "./contexts/CatalogContext";
 import { StoreProvider } from "./contexts/StoreContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Cart from "./pages/Cart";
+import Categories from "./pages/Categories";
 import Catalog from "./pages/Catalog";
 import Contact from "./pages/Contact";
 import Favorites from "./pages/Favorites";
@@ -21,6 +22,7 @@ function AppRoutes() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/products" component={Catalog} />
+      <Route path="/categories" component={Categories} />
       <Route path="/products/:id" component={ProductDetails} />
       <Route path="/favorites" component={Favorites} />
       <Route path="/cart" component={Cart} />

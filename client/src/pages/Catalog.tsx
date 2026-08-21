@@ -10,44 +10,41 @@ export default function Catalog() {
   const { searchTerm, setSearchTerm } = useStore();
   const { products, categories, loading, error } = useCatalog();
   const [category, setCategory] = useState("الكل");
-  const [color, setColor] = useState("الكل");
-  const [maxPrice, setMaxPrice] = useState(10000);
+  const [maxPrice, setMaxPrice] = useState(0);
   const [sort, setSort] = useState("featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
+
   useEffect(() => {
-    const target = new URLSearchParams(location.split("?")[1] || "").get(
-      "category"
-    );
-    if (target) setCategory(target);
+    const target = new URLSearchParams(location.split("?")[1] || "").get("category");
+    setCategory(target ?? "الكل");
   }, [location]);
-  const colors = useMemo(
-    () => [
-      "الكل",
-      ...Array.from(new Set(products.map(product => product.color))),
-    ],
-    [products]
+
+  const activeCategory = categories.find(item => item.id === Number(category));
+  const categoryProducts = useMemo(
+    () =>
+      products.filter(
+        product => category === "الكل" || product.categoryId === Number(category)
+      ),
+    [category, products]
   );
-  const apiMaxPrice = useMemo(
-    () => Math.max(1000, ...products.map(product => product.price)),
-    [products]
+  const priceCeiling = useMemo(
+    () => Math.max(0, ...categoryProducts.map(product => product.finalPrice)),
+    [categoryProducts]
   );
+
+  useEffect(() => setMaxPrice(priceCeiling), [priceCeiling]);
+
   const visible = useMemo(
     () =>
       products
         .filter(product => {
-          const searchMatch =
-            `${product.name} ${product.categoryNameArabic} ${product.color}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
+          const searchMatch = `${product.name} ${product.categoryNameArabic} ${product.color}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
           const categoryMatch =
             category === "الكل" || product.categoryId === Number(category);
-          const colorMatch = color === "الكل" || product.color.includes(color);
-          return (
-            searchMatch &&
-            categoryMatch &&
-            colorMatch &&
-            product.finalPrice <= maxPrice
-          );
+
+          return searchMatch && categoryMatch && product.finalPrice <= maxPrice;
         })
         .sort((a, b) =>
           sort === "low"
@@ -58,15 +55,15 @@ export default function Catalog() {
                 ? Date.parse(b.createdAt) - Date.parse(a.createdAt)
                 : Number(b.isBestSeller) - Number(a.isBestSeller)
         ),
-    [category, color, maxPrice, products, searchTerm, sort]
+    [category, maxPrice, products, searchTerm, sort]
   );
+
   const reset = () => {
     setCategory("الكل");
-    setColor("الكل");
-    setMaxPrice(apiMaxPrice);
     setSearchTerm("");
     setSort("featured");
   };
+
   const filterPanel = (
     <aside className="filter-panel">
       <div className="filter-panel-head">
@@ -79,13 +76,13 @@ export default function Catalog() {
         </button>
       </div>
       <div className="filter-group">
-        <h4>الفئة</h4>
+        <h4>القسم</h4>
         <div className="filter-list">
           <button
             onClick={() => setCategory("الكل")}
             className={category === "الكل" ? "selected" : ""}
           >
-            الكل
+            كل الأقسام
           </button>
           {categories.map(item => (
             <button
@@ -99,21 +96,6 @@ export default function Catalog() {
         </div>
       </div>
       <div className="filter-group">
-        <h4>اللون</h4>
-        <div className="color-filter-list">
-          {colors.map(item => (
-            <button
-              key={item}
-              onClick={() => setColor(item)}
-              className={color === item ? "selected" : ""}
-            >
-              <span className={`filter-dot dot-${item}`} />
-              {item}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="filter-group">
         <div className="price-label">
           <h4>السعر</h4>
           <b>حتى {maxPrice.toLocaleString("ar-EG")} ج.م</b>
@@ -121,46 +103,47 @@ export default function Catalog() {
         <input
           className="range-input"
           type="range"
-          min="200"
-          max={apiMaxPrice}
-          step="100"
-          value={Math.min(maxPrice, apiMaxPrice)}
+          min="0"
+          max={priceCeiling}
+          step="50"
+          value={Math.min(maxPrice, priceCeiling)}
           onChange={event => setMaxPrice(Number(event.target.value))}
+          disabled={priceCeiling === 0}
         />
+        <p className="price-filter-note">
+          يتحدد الحد الأقصى تلقائياً حسب أغلى منتج في {activeCategory?.nameArabic ?? "كل الأقسام"}.
+        </p>
       </div>
     </aside>
   );
+
   return (
     <main className="page-shell">
       <div className="container page-intro">
-        <p className="eyebrow">تشكيلة متجددة</p>
+        <p className="eyebrow">{activeCategory?.nameEnglish ?? "تشكيلة متجددة"}</p>
         <h1>
-          قطع تليق بكل <span>تفصيلة.</span>
+          {activeCategory?.nameArabic ?? "قطع تليق بكل"} <span>{activeCategory ? "" : "تفصيلة."}</span>
         </h1>
         <p>
-          تصفحي أدوات المطبخ، الضيافة، التخزين والديكور الذي يحوّل البيت إلى
-          مساحة أقرب لك.
+          {activeCategory
+            ? `تصفحي كل منتجات قسم ${activeCategory.nameArabic}، واختاري القطعة التي تناسب بيتك.`
+            : "تصفحي أدوات المطبخ، الضيافة، التخزين والديكور الذي يحوّل البيت إلى مساحة أقرب لك."}
         </p>
       </div>
       <div className="container catalog-layout">
         <div className="desktop-filters">{filterPanel}</div>
         <div className="catalog-content">
           <div className="catalog-toolbar">
-            <button
-              className="filter-trigger"
-              onClick={() => setFiltersOpen(true)}
-            >
+            <button className="filter-trigger" onClick={() => setFiltersOpen(true)}>
               <SlidersHorizontal size={18} /> تصفية
             </button>
             <span>
               يعرض <b>{visible.length}</b> قطعة
+              {activeCategory ? ` من ${activeCategory.nameArabic}` : ""}
             </span>
             <label className="sort-select">
               ترتيب حسب{" "}
-              <select
-                value={sort}
-                onChange={event => setSort(event.target.value)}
-              >
+              <select value={sort} onChange={event => setSort(event.target.value)}>
                 <option value="featured">الأكثر تميزاً</option>
                 <option value="low">السعر: الأقل أولاً</option>
                 <option value="high">السعر: الأعلى أولاً</option>
@@ -175,9 +158,7 @@ export default function Catalog() {
             <div className="empty-state">
               <span>{error}</span>
               <p>تأكدي من إعداد رابط الـ API ثم أعيدي المحاولة.</p>
-              <button onClick={() => window.location.reload()}>
-                إعادة المحاولة
-              </button>
+              <button onClick={() => window.location.reload()}>إعادة المحاولة</button>
             </div>
           ) : visible.length ? (
             <div className="product-grid catalog-grid">
@@ -195,14 +176,8 @@ export default function Catalog() {
         </div>
       </div>
       {filtersOpen && (
-        <div
-          className="filter-drawer-backdrop"
-          onClick={() => setFiltersOpen(false)}
-        >
-          <div
-            className="filter-drawer"
-            onClick={event => event.stopPropagation()}
-          >
+        <div className="filter-drawer-backdrop" onClick={() => setFiltersOpen(false)}>
+          <div className="filter-drawer" onClick={event => event.stopPropagation()}>
             {filterPanel}
           </div>
         </div>
